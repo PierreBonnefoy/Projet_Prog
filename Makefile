@@ -1,10 +1,14 @@
-OPTIONS=-Wall -std=c89 -pedantic -O3
+TARGET= main
+OBJECTS= partie1.o
+CC=gcc 
+CFLAGS=-g -W -Wall -std=c89 -pedantic -O3 -Wall `pkg-config --cflags MLV`
+LDFLAGS = `pkg-config --libs-only-other --libs-only-L MLV`
+LDLIBS=`pkg-config --libs-only-l MLV`
+all: $(TARGET)
 
-compiler:partie1.o
-	gcc $(OPTIONS) partie1.o -o partie1
-
-partie1.o:partie1.c partie1.h
-	gcc $(OPTIONS) partie1.c -c
-
+$(TARGET): $(OBJECTS)
+	$(CC) -o $@ $(LDFLAGS) $(OBJECTS) $(LDLIBS)
 clean:
-	rm -rf *.o *~
+	-rm -f $(TARGET)
+	-rm -f $(OBJECTS)
+	-rm -rf *~
