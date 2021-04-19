@@ -20,21 +20,38 @@ point * chargement_fichier(char *chemin){
 }
 
 int main(int argc,char **argv){
-    int i=0;
+  int i=0,taille=750;
+  int x,y;
     point *tab;
-    MLV_create_window("Partie 1","partie1",200,200);
-    if(argc!=2){
-        printf("Erreur : usage ./partie1 <nom_fichier>\n");
-        exit(-1);
+    char *fichier2;
+    MLV_create_window("Partie 1","partie1",taille+200,taille);
+    MLV_draw_text_box(
+                taille+10,80,
+                150,20,
+                "Load File",
+                1,
+                MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK,
+                MLV_TEXT_LEFT,
+                MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER
+    );
+
+    MLV_draw_line(taille,1,taille,taille-1,MLV_COLOR_WHITE);
+    MLV_actualise_window();
+    MLV_wait_mouse(&x,&y);
+    if(x>taille+10 && x<taille+10+150 && y>80 && y<100){
+      printf("Bouton cliqué\n");
+      MLV_wait_input_box(taille+10,10,taille+40,20,MLV_COLOR_RED,MLV_COLOR_GREEN,MLV_COLOR_BLACK,"fichier :",&fichier2);
     }
-    tab=chargement_fichier(argv[1]);
-    while(tab[i+1].classe!=NULL){
+    tab=chargement_fichier(fichier2);
+    free(fichier2);
+    MLV_actualise_window();
+    while(tab[i+1].classe!=0){
         printf("x = %f y = %f classe = %d\n",tab[i].x,tab[i].y,tab[i].classe);
 	if(tab[i].classe==1){
-	  MLV_draw_filled_circle((tab[i].x+1)*100,(tab[i].y+1)*100,2,MLV_COLOR_BLUE);
+	  MLV_draw_filled_circle((tab[i].x+1)*(taille/2),(tab[i].y+1)*(taille/2),2,MLV_COLOR_BLUE);
 	}
 	if(tab[i].classe==2){
-	  MLV_draw_filled_circle((tab[i].x+1)*100,(tab[i].y+1)*100,2,MLV_COLOR_RED);
+	  MLV_draw_filled_circle((tab[i].x+1)*(taille/2),(tab[i].y+1)*(taille/2),2,MLV_COLOR_RED);
 	}
         i++;
 	MLV_actualise_window();
