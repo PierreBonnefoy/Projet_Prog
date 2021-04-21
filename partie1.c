@@ -27,6 +27,7 @@ point* chargement_fichier(point *tab,char *chemin)
     tab_bis[i]=tab[i];
     i++;
   }
+  free(tab);
   if (tab_bis == NULL)
   {
     fprintf(stderr, "erreur allocution pointeur !");
@@ -61,6 +62,7 @@ point* inserer_point(int x, int y, int classe,point *tab,int taille)
     tab_bis[i]=tab[i];
     i++;
   }
+  free(tab);
   /*---Conversion pour rentrer dans le tablea---*/
   x2=((x*1.000000)/(taille/2))-1;
   y2=1-((y*1.000000)/(taille/2));
@@ -69,6 +71,22 @@ point* inserer_point(int x, int y, int classe,point *tab,int taille)
   tab_bis[i].x=x2;
   tab_bis[i].y=y2;
   tab_bis[i].classe=classe;
+  return tab_bis;
+}
+
+point* undo(point *tab){
+  point* tab_bis;
+  int i=0;
+  while (tab[i].classe != 0){
+    i++;
+  }
+  tab_bis=(point *)calloc((i),sizeof(point));
+  i=0;
+  while(tab[i+1].classe!=0){
+    tab_bis[i]=tab[i];
+    i++;
+  }
+  free(tab);
   return tab_bis;
 }
 
@@ -158,6 +176,14 @@ int main(int argc, char **argv)
       MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK,
       MLV_TEXT_LEFT,
       MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+   MLV_draw_text_box(
+      taille + 10, 280,
+      150, 20,
+      "Undo",
+      1,
+      MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK,
+      MLV_TEXT_LEFT,
+      MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
   MLV_draw_line(taille, 1, taille, taille - 1, MLV_COLOR_WHITE);
   MLV_actualise_window();
 
@@ -201,5 +227,9 @@ int main(int argc, char **argv)
       sauvegarde_fichier(tab,fichier2,info);
     }
 
+    if(x > taille + 10 && x < taille + 10 + 150 && y > 280 && y < 300){
+      tab=undo(tab);
+      affichage_points(taille,tab);
+    }
   }
 }

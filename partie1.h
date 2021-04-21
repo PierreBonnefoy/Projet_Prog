@@ -11,5 +11,7 @@ typedef struct point{
 
 point* chargement_fichier(point *tab,char *path);
 point* inserer_point(int x,int y,int classe,point *tab,int taille);
+point* undo(point *tab);
+void sauvegarde_fichier(point *p, char * nom, int * info);
 void affichage_points(int taille,point *tab);
 #endif
