@@ -9,5 +9,7 @@ typedef struct point{
     int classe;
 }point;
 
-point* chargement_fichier(char *path);
+point* chargement_fichier(point *tab,char *path);
+point* inserer_point(int x,int y,int classe,point *tab,int taille);
+void affichage_points(int taille,point *tab);
 #endif
