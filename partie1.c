@@ -164,6 +164,74 @@ point *kppv(int k, int x, int y, int taille, point *tab)
   return tab;
 }
 
+point *kppvpdd(int k,int x,int y,int taille,point *tab){
+  float x2, y2, distance,temp;
+  int i = 0, j = 0,l,tempi,radius,*tabclasse,max=0;
+  float *kp;
+  int *kpbis;
+  kp = (float *)malloc(k * sizeof(float));
+  kpbis=(int *)malloc(k*sizeof(int));
+  tabclasse=(int *)malloc(k*sizeof(int));
+  for (i = 0; i < k; i++)
+  {
+    kp[i] = 100;
+    kpbis[i]=0;
+    tabclasse[i]=0;
+  }
+  
+  i = 0;
+  x2 = ((x * 1.000000) / (taille / 2)) - 1;
+  y2 = 1 - ((y * 1.000000) / (taille / 2));
+  while (tab[i].classe != 0)
+  {
+    distance = fabsf(sqrt(pow((tab[i].x - x2), 2) + pow((tab[i].y - y2), 2)));
+
+    for (j = 0; j < k; j++)
+    {
+      if(distance<kp[j]){
+        for(l=0;l<k;l++){
+          if(kp[l]<kp[l+1]){
+            temp=kp[l+1];
+            kp[l+1]=kp[l];
+            kp[l]=temp;
+            tempi=kpbis[l+1];
+            kpbis[l+1]=kpbis[l];
+            kpbis[l]=tempi;
+          }
+        }
+        kp[0]=distance;
+        kpbis[0]=i;
+        break;
+      }
+      printf("i = %d dis = %f\n",kpbis[j],kp[j]);
+    }
+    printf("\n");
+    i++;
+  }
+  for(l=0;l<k;l++){
+          if(kp[l]<kp[l+1]){
+            temp=kp[l+1];
+            kp[l+1]=kp[l];
+            kp[l]=temp;
+            tempi=kpbis[l+1];
+            kpbis[l+1]=kpbis[l];
+            kpbis[l]=tempi;
+          }
+        }
+  for(j=0;j<k;j++){
+    printf("%d\n",kpbis[i]);
+    tabclasse[tab[kpbis[j]].classe]+=1;
+  }
+  for(j=1;j<=2;j++){
+    if(tabclasse[j]>max){
+      max=j;
+    }
+  }
+  printf("max = %d",max);
+  tab=inserer_point(x,y,max,tab,taille);
+  return tab;
+}
+
 void affichage_points(int taille, point *tab)
 {
   int i = 0;
@@ -274,6 +342,14 @@ int main(int argc, char **argv)
       MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK,
       MLV_TEXT_LEFT,
       MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+  MLV_draw_text_box(
+      taille + 10, 350,
+      150, 20,
+      "KPPV decision",
+      1,
+      MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK,
+      MLV_TEXT_LEFT,
+      MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
   MLV_draw_line(taille, 1, taille, taille - 1, MLV_COLOR_WHITE);
   MLV_actualise_window();
 
@@ -336,6 +412,14 @@ int main(int argc, char **argv)
       k = atoi(classetxt);
       MLV_wait_mouse(&x, &y);
       kppv(k, x, y, taille, tab);
+    }
+    if (x > taille + 10 && x < taille + 10 + 150 && y > 350 && y < 370)
+    {
+      MLV_wait_input_box(taille + 10, 10, taille + 40, 20, MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK, "Valeur k :", &classetxt);
+      k = atoi(classetxt);
+      MLV_wait_mouse(&x, &y);
+      tab=kppvpdd(k, x, y, taille, tab);
+      affichage_points(taille,tab);
     }
   }
 }
