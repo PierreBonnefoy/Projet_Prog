@@ -152,10 +152,11 @@ point *kppv(int k, int x, int y, int taille, point *tab)
           }
         }
   for(j=0;j<k;j++){
-    tab[kpbis[j]].classe=3;
+    MLV_draw_filled_circle((tab[kpbis[j]].x + 1) * (taille / 2), taille - ((tab[kpbis[j]].y + 1) * (taille / 2)),3,
+		MLV_COLOR_GREEN
+	);
   }
   radius=kp[0] * (taille / 2);
-  affichage_points(taille, tab);
   MLV_draw_circle(x,y,radius,MLV_COLOR_WHITE);
   MLV_draw_filled_circle(	x,	y,2,
 		MLV_COLOR_WHITE 
@@ -229,6 +230,10 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
   }
   printf("max = %d",max);
   tab=inserer_point(x,y,max,tab,taille);
+  radius=kp[0] * (taille / 2);
+  affichage_points(taille, tab);
+  MLV_draw_circle(x,y,radius,MLV_COLOR_WHITE);
+  MLV_actualise_window();
   return tab;
 }
 
@@ -419,7 +424,6 @@ int main(int argc, char **argv)
       k = atoi(classetxt);
       MLV_wait_mouse(&x, &y);
       tab=kppvpdd(k, x, y, taille, tab);
-      affichage_points(taille,tab);
     }
   }
 }
