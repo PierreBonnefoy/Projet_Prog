@@ -24,6 +24,10 @@ point *chargement_fichier(point *tab, char *chemin)
   /*---Allocation---*/
 
   tab_bis = (point *)calloc((i + taille + 1), sizeof(point));
+  if(tab_bis==NULL){
+    fprintf(stderr,"Erreur allocaion !\n");
+    exit (-1);
+  }
   i = 0;
   while (tab[i].classe != 0)
   {
@@ -38,7 +42,6 @@ point *chargement_fichier(point *tab, char *chemin)
   }
 
   /*---Lecture du fichier texte + creation du tableau de points---*/
-  printf("taille+i = %d\n", taille + i);
 
   for (j = i; j <= taille + i; j++)
   {
@@ -61,6 +64,10 @@ point *inserer_point(int x, int y, int classe, point *tab, int taille)
     i++;
   }
   tab_bis = (point *)calloc((i + 2), sizeof(point));
+  if(tab_bis==NULL){
+    fprintf(stderr,"Erreur allocaion !\n");
+    exit (-1);
+  }
   i = 0;
   while (tab[i].classe != 0)
   {
@@ -88,6 +95,10 @@ point *undo(point *tab)
     i++;
   }
   tab_bis = (point *)calloc((i), sizeof(point));
+  if(tab_bis==NULL){
+    fprintf(stderr,"Erreur allocaion !\n");
+    exit (-1);
+  }
   i = 0;
   while (tab[i + 1].classe != 0)
   {
@@ -104,8 +115,12 @@ point *kppv(int k, int x, int y, int taille, point *tab)
   int i = 0, j = 0,l,tempi,radius;
   float *kp;
   int *kpbis;
-  kp = (int *)malloc(k * sizeof(float));
+  kp = (float *)malloc(k * sizeof(float));
   kpbis=(int *)malloc(k*sizeof(int));
+  if(kp==NULL || kpbis==NULL){
+    fprintf(stderr,"Erreur allocaion !\n");
+    exit (-1);
+  }
   for (i = 0; i < k; i++)
   {
     kp[i] = 100;
@@ -136,9 +151,7 @@ point *kppv(int k, int x, int y, int taille, point *tab)
         kpbis[0]=i;
         break;
       }
-      printf("i = %d dis = %f\n",kpbis[j],kp[j]);
     }
-    printf("\n");
     i++;
   }
   for(l=0;l<k;l++){
@@ -173,6 +186,10 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
   kp = (float *)malloc(k * sizeof(float));
   kpbis=(int *)malloc(k*sizeof(int));
   tabclasse=(int *)malloc(k*sizeof(int));
+  if(tabclasse==NULL || kp==NULL || kpbis==NULL){
+    fprintf(stderr,"Erreur allocaion !\n");
+    exit (-1);
+  }
   for (i = 0; i < k; i++)
   {
     kp[i] = 100;
@@ -204,9 +221,7 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
         kpbis[0]=i;
         break;
       }
-      printf("i = %d dis = %f\n",kpbis[j],kp[j]);
     }
-    printf("\n");
     i++;
   }
   for(l=0;l<k;l++){
@@ -220,7 +235,6 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
           }
         }
   for(j=0;j<k;j++){
-    printf("%d\n",kpbis[i]);
     tabclasse[tab[kpbis[j]].classe]+=1;
   }
   for(j=1;j<=2;j++){
@@ -228,7 +242,6 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
       max=j;
     }
   }
-  printf("max = %d",max);
   tab=inserer_point(x,y,max,tab,taille);
   radius=kp[0] * (taille / 2);
   affichage_points(taille, tab);
@@ -245,7 +258,6 @@ void affichage_points(int taille, point *tab)
 
   while (tab[i].classe != 0)
   {
-    printf("x = %f y = %f classe = %d i = %d\n", tab[i].x, tab[i].y, tab[i].classe, i);
     if (tab[i].classe == 3)
     {
       MLV_draw_filled_circle((tab[i].x + 1) * (taille / 2), taille - ((tab[i].y + 1) * (taille / 2)), 3, MLV_COLOR_GREEN);
@@ -261,7 +273,6 @@ void affichage_points(int taille, point *tab)
     i++;
     MLV_actualise_window();
   }
-  printf("\n");
 }
 
 void sauvegarde_fichier(point *p, char *nom, int *info)
@@ -288,14 +299,18 @@ void sauvegarde_fichier(point *p, char *nom, int *info)
   fclose(save);
 }
 
-int main(int argc, char **argv)
+int main()
 {
-  int i = 0, taille = 750;
+  int taille = 750;
   int x, y, classe, k;
   int info[3];
   point *tab;
   char *fichier2, *classetxt;
   tab = (point *)calloc(1, sizeof(point));
+  if(tab==NULL){
+    fprintf(stderr,"Erreur allocaion !\n");
+    exit (-1);
+  }
   /*---Affichage de la fenetre et des boutons ---*/
 
   MLV_create_window("Partie 1", "partie1", taille + 200, taille);
@@ -373,7 +388,6 @@ int main(int argc, char **argv)
       MLV_wait_mouse(&x, &y);
       tab = inserer_point(x, y, classe, tab, taille);
       affichage_points(taille, tab);
-      printf("\n");
     }
 
     /*---Si chargement d'un fichier ---*/
@@ -383,7 +397,6 @@ int main(int argc, char **argv)
       tab = chargement_fichier(tab, fichier2);
       free(fichier2);
       affichage_points(taille, tab);
-      printf("\n");
     }
 
     /*--Si quitt---*/
