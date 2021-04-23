@@ -101,7 +101,7 @@ point *undo(point *tab)
 point *kppv(int k, int x, int y, int taille, point *tab)
 {
   float x2, y2, distance,temp;
-  int i = 0, j = 0,l,tempi;
+  int i = 0, j = 0,l,tempi,radius;
   float *kp;
   int *kpbis;
   kp = (int *)malloc(k * sizeof(float));
@@ -141,9 +141,26 @@ point *kppv(int k, int x, int y, int taille, point *tab)
     printf("\n");
     i++;
   }
+  for(l=0;l<k;l++){
+          if(kp[l]<kp[l+1]){
+            temp=kp[l+1];
+            kp[l+1]=kp[l];
+            kp[l]=temp;
+            tempi=kpbis[l+1];
+            kpbis[l+1]=kpbis[l];
+            kpbis[l]=tempi;
+          }
+        }
   for(j=0;j<k;j++){
     tab[kpbis[j]].classe=3;
   }
+  radius=kp[0] * (taille / 2);
+  affichage_points(taille, tab);
+  MLV_draw_circle(x,y,radius,MLV_COLOR_WHITE);
+  MLV_draw_filled_circle(	x,	y,2,
+		MLV_COLOR_WHITE 
+	);
+  MLV_actualise_window();
   return tab;
 }
 
@@ -319,7 +336,6 @@ int main(int argc, char **argv)
       k = atoi(classetxt);
       MLV_wait_mouse(&x, &y);
       kppv(k, x, y, taille, tab);
-      affichage_points(taille, tab);
     }
   }
 }
