@@ -1,5 +1,5 @@
 TARGET= main
-OBJECTS= partie1.o
+OBJECTS= partie1.o partie2.o
 CC=gcc 
 CFLAGS=-g -W -Wall -std=c89 -pedantic -O3 -Wall `pkg-config --cflags MLV`
 LDFLAGS = `pkg-config --libs-only-other --libs-only-L MLV`
