@@ -134,6 +134,11 @@ int main()
       MLV_wait_input_box(taille + 10, 10, taille + 40, 20, MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK, "fichier :", &fichier2);
       tab=chargement_fichier(tab, fichier2);
       free(fichier2);
+	  /*while (tab[i].classe != 0)
+  		{
+			a=inserer(a,tab[i]);
+    		i++;
+  		}*/
       affichage_points(taille, tab);
     }
 
