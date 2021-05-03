@@ -1,5 +1,6 @@
 #include "partie2.h"
 #include <MLV/MLV_all.h>
+#include <math.h>
 
 int est_vide(arbre_kd *a)
 {
@@ -50,6 +51,7 @@ arbre_kd inserer(arbre_kd a, point p, int choix)
     }
   }
 }
+
 point *recherche(arbre_kd a, point p, int k, int choix)
 {
   point *liste;
@@ -78,6 +80,35 @@ point *recherche(arbre_kd a, point p, int k, int choix)
     }
   }
 }
+
+point *maj_liste(point *p_tmp, point *liste)
+{
+  int i = 0,j=1;
+
+  while (liste[i].classe != 0){
+    
+    if (liste[i] != NULL){
+      i++;
+    }
+    else{
+      liste[i].classe = p_tmp->classe;
+      liste[i].x=p_tmp->x;
+      liste[i].y=p_tmp->y;
+      return liste;
+    }
+  }
+
+  for (j = 1; i <= j; j++){
+    if(sqrt(pow(p_tmp->x,2)+pow(p_tmp->y,2)) < sqrt(pow(liste[j].x,2)+pow(liste[j].y,2))){
+      liste[j].classe = p_tmp->classe;
+      liste[j].x=p_tmp->x;
+      liste[j].y=p_tmp->y;
+      return liste;
+    }
+  }
+  return liste;
+}
+
 int main()
 {
   int taille = 750;
