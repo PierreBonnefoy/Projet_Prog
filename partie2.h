@@ -13,6 +13,8 @@ struct noeud{
 }noeud;
 
 int est_vide(arbre_kd *a);
-arbre_kd inserer(arbre_kd a, point p);
+arbre_kd inserer(arbre_kd a, point p,int choix );
+point * recherche(arbre_kd a,point p,int k,int choix);
+point * maj_liste(point point_tmp,point * liste);
 
 #endif
