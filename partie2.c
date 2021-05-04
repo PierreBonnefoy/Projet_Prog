@@ -52,37 +52,35 @@ arbre_kd inserer(arbre_kd a, point p, int choix)
   }
 }
 
-/*
-point *recherche(arbre_kd a, point p, int k, int choix)
+point * recherche(arbre_kd a, point p, int k /*, int choix*/)
 {
-  point *liste;
+  point * liste;
+  zone zone_gauche,zone_droit;
   int i;
   liste = (point *)calloc(k, sizeof(point));
-  if (choix % 2 == 0)
+  liste = maj_liste(a->noeud, liste);
+
+  if (a->filsdroit == NULL && a->filsgauche == NULL)
   {
-    if (a->noeud.x < p.x)
-    {
-      liste = recherche(a->filsdroit, p, k, choix + 1);
-    }
-    else
-    {
-      liste = recherche(a->filsgauche, p, k, choix + 1);
-    }
+    return liste;
   }
   else
   {
-    if (a->noeud.y < p.y)
+
+    if (est_dans_zone(p, zone_gauche /* zone associer à fils gauche */))
     {
-      liste = recherche(a->filsdroit, p, k, choix + 1);
+      liste = recherche(a->filsgauche, p, k);
     }
-    else
+    if (est_dans_zone(p, zone_droit /* zone associer è fils droit */))
     {
-      liste = recherche(a->filsgauche, p, k, choix + 1);
+      liste = recherche(a->filsdroit, p, k);
     }
   }
-}*/
 
-point *maj_liste(point *p_tmp, point *liste)
+  return liste;
+}
+
+point * maj_liste(point *p_tmp, point *liste)
 {
   int i = 0, j = 0;
   point temp;
@@ -122,6 +120,16 @@ point *maj_liste(point *p_tmp, point *liste)
     }
   }
   return liste;
+}
+
+point * point_proche_dans_zone(point *p, zone z_tmp)
+{
+  return p;
+}
+
+int est_dans_zone(point *p, zone z_tmp)
+{
+  return 1;
 }
 
 int main()
