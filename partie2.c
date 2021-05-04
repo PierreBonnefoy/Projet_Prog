@@ -2,7 +2,7 @@
 #include <MLV/MLV_all.h>
 #include <math.h>
 
-int est_vide(arbre_kd *a)
+int est_vide(arbre_kd a)
 {
   if (a == NULL)
   {
@@ -52,35 +52,27 @@ arbre_kd inserer(arbre_kd a, point p, int choix)
   }
 }
 
-point * recherche(arbre_kd a, point p, int k /*, int choix*/)
+point *recherche(arbre_kd a, point p, int k)
 {
-  point * liste;
-  zone zone_gauche,zone_droit;
-  int i;
+  point *liste;
   liste = (point *)calloc(k, sizeof(point));
   liste = maj_liste(a->noeud, liste);
-
-  if (a->filsdroit == NULL && a->filsgauche == NULL)
+  if (est_vide(a->filsdroit) && est_vide(a->filsdroit))
   {
     return liste;
   }
   else
   {
-
-    if (est_dans_zone(p, zone_gauche /* zone associer à fils gauche */))
-    {
-      liste = recherche(a->filsgauche, p, k);
-    }
-    if (est_dans_zone(p, zone_droit /* zone associer è fils droit */))
+    liste = recherche(a->filsgauche, p, k);
+    if (est_dans_zone(p,a->filsdroit->zone /* zone associer è fils droit */))
     {
       liste = recherche(a->filsdroit, p, k);
     }
   }
-
   return liste;
 }
 
-point * maj_liste(point *p_tmp, point *liste)
+point *maj_liste(point p_tmp, point *liste)
 {
   int i = 0, j = 0;
   point temp;
@@ -94,15 +86,15 @@ point * maj_liste(point *p_tmp, point *liste)
     }
     else
     {
-      liste[i].classe = p_tmp->classe;
-      liste[i].x = p_tmp->x;
-      liste[i].y = p_tmp->y;
+      liste[i].classe = p_tmp.classe;
+      liste[i].x = p_tmp.x;
+      liste[i].y = p_tmp.y;
       break;
     }
   }
   for (j = 0; j < i; j++)
   {
-    if (sqrt(pow(liste[j + 1].x, 2) + pow(liste[j + 1].y, 2)) > sqrt(pow(liste[j].x, 2) + pow(liste[j].y, 2)))
+    if (fabsf(sqrt(pow((liste[j].x - p_tmp.x), 2) + pow((liste[i].y - p_tmp.y), 2))) > fabsf(sqrt(pow((liste[i].x - p_tmp.x), 2) + pow((liste[i].y - p_tmp.y), 2))))
     {
       temp = liste[j + 1];
       liste[j + 1] = liste[j];
@@ -111,25 +103,104 @@ point * maj_liste(point *p_tmp, point *liste)
   }
   for (j = 0; j < i; j++)
   {
-    if (sqrt(pow(p_tmp->x, 2) + pow(p_tmp->y, 2)) < sqrt(pow(liste[j].x, 2) + pow(liste[j].y, 2)))
-    {
-      liste[j].classe = p_tmp->classe;
-      liste[j].x = p_tmp->x;
-      liste[j].y = p_tmp->y;
-      return liste;
-    }
+    if (fabsf(sqrt(pow((liste[j].x - p_tmp.x), 2) + pow((liste[i].y - p_tmp.y), 2))) > fabsf(sqrt(pow((liste[i].x - p_tmp.x), 2) + pow((liste[i].y - p_tmp.y), 2))))
+      {
+        liste[j].classe = p_tmp.classe;
+        liste[j].x = p_tmp.x;
+        liste[j].y = p_tmp.y;
+        return liste;
+      }
   }
   return liste;
 }
 
-point * point_proche_dans_zone(point *p, zone z_tmp)
+point point_proche_dans_zone(point p, zone z_tmp)
 {
-  return p;
+  int i = 0, indexmin = 0;
+  float dist = 0, dmin = 10;
+  while (z_tmp[i].classe != 0)
+  {
+    dist = fabsf(sqrt(pow((z_tmp[i].x - p.x), 2) + pow((z_tmp[i].y - p.y), 2)));
+    if (dist < dmin)
+    {
+      dmin = dist;
+      indexmin = i;
+    }
+    i++;
+  }
+  return z_tmp[indexmin];
 }
 
-int est_dans_zone(point *p, zone z_tmp)
+arbre_kd maj_zone(arbre_kd a,point p){
+  if(est_vide(a->filsdroit) && est_vide(a->filsgauche)){
+    printf("vide\n");
+    a->zone=(zone)calloc(1,sizeof(point));
+    a->zone[0]=p;
+    return a;
+  }
+  if(est_vide(a->filsdroit)){
+    printf("filsgauche\n");
+    a->filsgauche=maj_zone(a->filsgauche,p);
+    a->zone=concat(a->zone,a->filsgauche->zone);
+    return a;
+  }
+  if(est_vide(a->filsgauche)){
+    printf("filsdroit\n");
+    a->filsdroit=maj_zone(a->filsdroit,p);
+    a->zone=concat(a->zone,a->filsdroit->zone);
+    return a;
+  }
+  if(!est_vide(a->filsgauche) && !est_vide(a->filsdroit)){
+    printf("tout\n");
+    a->filsgauche=maj_zone(a->filsgauche,p);
+    a->filsdroit=maj_zone(a->filsdroit,p);
+    a->zone=concat(a->filsgauche->zone,a->filsdroit->zone);
+    return a;
+  }
+  return a;
+}
+int est_dans_zone(point p, zone z_tmp)
 {
-  return 1;
+  int i = 0;
+  while (z_tmp[i].classe != 0)
+  {
+    if (z_tmp[i].x == p.x && z_tmp[i].y == p.y && z_tmp[i].classe == p.classe)
+    {
+      return 1;
+    }
+    i++;
+  }
+  return 0;
+}
+
+void affichage_zone(point * z){
+  int i=0;
+  while(z[i].classe!=0){
+    printf("(%f,%f,%d) ",z[i].x,z[i].y,z[i].classe);
+    i++;
+  }
+  printf("\n");
+}
+
+zone concat(zone zone1,zone zone2){
+  int i=0,j=0,k=0,l=0;
+  zone z3;
+  while(zone1[i].classe != 0){
+    i++;
+  }
+  while(zone2[j].classe != 0){
+    j++;
+  }
+  z3=(zone)calloc((i+j)+2,sizeof(point));
+  for(k=0;k<i;k++){
+    
+    z3[k]=zone1[k];
+  }
+  for(k=i;k<(i+j);k++){
+    z3[k]=zone2[l];
+    l++;
+  }
+  return z3;
 }
 
 int main()
@@ -229,6 +300,8 @@ int main()
       }
       i--;
       a = inserer(a, tab[i], 0);
+      a=maj_zone(a,tab[i]);
+      affichage_zone(a->zone);
       affichage_points(taille, tab);
     }
 
@@ -245,8 +318,8 @@ int main()
 
     if (x > taille + 10 && x < taille + 10 + 150 && y > 200 && y < 220)
     {
-      printf("%d %d %d\n", a->noeud.classe, a->filsgauche->noeud.classe, a->filsdroit->noeud.classe);
-      printf("%d %d\n", a->filsgauche->filsgauche->noeud.classe, a->filsgauche->filsdroit->noeud.classe);
+      /*printf("%d %d %d\n", a->noeud.classe, a->filsgauche->noeud.classe, a->filsdroit->noeud.classe);
+      printf("%d %d\n", a->filsgauche->filsgauche->noeud.classe, a->filsgauche->filsdroit->noeud.classe);*/
       MLV_free_window();
       exit(0);
     }
@@ -284,3 +357,4 @@ int main()
     }
   }
 }
+/*rectifier la concatenation, et la maj du coup, puis verifier si les autres fonction marche grace à ça*/
