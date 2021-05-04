@@ -52,6 +52,7 @@ arbre_kd inserer(arbre_kd a, point p, int choix)
   }
 }
 
+/*
 point *recherche(arbre_kd a, point p, int k, int choix)
 {
   point *liste;
@@ -79,30 +80,44 @@ point *recherche(arbre_kd a, point p, int k, int choix)
       liste = recherche(a->filsgauche, p, k, choix + 1);
     }
   }
-}
+}*/
 
 point *maj_liste(point *p_tmp, point *liste)
 {
-  int i = 0,j=1;
+  int i = 0, j = 0;
+  point temp;
 
-  while (liste[i].classe != 0){
-    
-    if (liste[i] != NULL){
+  while (liste[i].classe != 0)
+  {
+
+    if (liste[i].classe != 0)
+    {
       i++;
     }
-    else{
+    else
+    {
       liste[i].classe = p_tmp->classe;
-      liste[i].x=p_tmp->x;
-      liste[i].y=p_tmp->y;
-      return liste;
+      liste[i].x = p_tmp->x;
+      liste[i].y = p_tmp->y;
+      break;
     }
   }
-
-  for (j = 1; i <= j; j++){
-    if(sqrt(pow(p_tmp->x,2)+pow(p_tmp->y,2)) < sqrt(pow(liste[j].x,2)+pow(liste[j].y,2))){
+  for (j = 0; j < i; j++)
+  {
+    if (sqrt(pow(liste[j + 1].x, 2) + pow(liste[j + 1].y, 2)) > sqrt(pow(liste[j].x, 2) + pow(liste[j].y, 2)))
+    {
+      temp = liste[j + 1];
+      liste[j + 1] = liste[j];
+      liste[j] = temp;
+    }
+  }
+  for (j = 0; j < i; j++)
+  {
+    if (sqrt(pow(p_tmp->x, 2) + pow(p_tmp->y, 2)) < sqrt(pow(liste[j].x, 2) + pow(liste[j].y, 2)))
+    {
       liste[j].classe = p_tmp->classe;
-      liste[j].x=p_tmp->x;
-      liste[j].y=p_tmp->y;
+      liste[j].x = p_tmp->x;
+      liste[j].y = p_tmp->y;
       return liste;
     }
   }
@@ -115,7 +130,6 @@ int main()
   int x, y, i = 0, classe, k;
   int info[3];
   arbre_kd a;
-  point pkd, pkd2;
   point *tab;
   char *fichier2, *classetxt;
   tab = (point *)calloc(1, sizeof(point));
