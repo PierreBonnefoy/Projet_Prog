@@ -62,29 +62,38 @@ point *recherche(arbre_kd a, point p, int k,point *liste){
   {
     return liste;
   }
-  else if (est_vide(a->filsgauche))
+  if(est_vide(a->filsgauche))
   {
     liste=recherche(a->filsdroit,p,k,liste);
+    return liste;
   }
-  else if(est_vide(a->filsdroit))
+  if(est_vide(a->filsdroit))
   {
     liste=recherche(a->filsgauche,p,k,liste);
+    return liste;
   }
-  else if(est_dans_zone(p,a->filsgauche->zone)){
+  if(est_dans_zone(p,a->filsgauche->zone)){
     liste=recherche(a->filsgauche,p,k,liste);
+    return liste;
   }
-  else if(est_dans_zone(p,a->filsdroit->zone)){
+  if(est_dans_zone(p,a->filsdroit->zone)){
     liste=recherche(a->filsdroit,p,k,liste);
+    return liste;
   }
   else{
     dist1=distance(point_proche_dans_zone(p,a->filsgauche->zone),p);
+    printf("d1=%f ",dist1);
     dist2=distance(point_proche_dans_zone(p,a->filsdroit->zone),p);
+    printf("d2=%f\n",dist2);
     if(dist1 <= dist2){
+      printf("gauche !\n");
       liste=recherche(a->filsgauche,p,k,liste);
+      printf("x = %f\n",liste[0].x);
       liste=recherche(a->filsdroit,p,k,liste);
       return liste;
     }
     if(dist1 > dist2){
+      printf("droite !\n");
       liste=recherche(a->filsdroit,p,k,liste);
       liste=recherche(a->filsgauche,p,k,liste);
       return liste;
@@ -131,16 +140,14 @@ point *recherche(arbre_kd a, point p, int k, point *liste)
   }  
 }*/
 
-point *maj_liste(point p_tmp, point * liste,int k, point kpos)
+point *maj_liste(point p_tmp, point * liste,int k, point kpos) 
   {
     int i = 0, j = 0;
     point temp;
-    printf("*\n");
     if(liste[0].classe == 0){
       liste[0]=p_tmp;
       return liste;
     }
-    printf("**\n");
     while (liste[i].classe != 0)
     {
       if(i==(k-1)){
@@ -148,38 +155,42 @@ point *maj_liste(point p_tmp, point * liste,int k, point kpos)
       }
       i++;
     }
-    printf("***\n");
     if(i==(k-1)){
-      printf("****\n");
       for (j = 0; j < i; j++)
       {
-        if (fabsf(sqrt(pow((liste[j].x - p_tmp.x), 2) + pow((liste[j].y - p_tmp.y), 2))) < fabsf(sqrt(pow((liste[j + 1].x - p_tmp.x), 2) + pow((liste[j + 1].y - p_tmp.y), 2))))
+        if (distance(liste[j],kpos) < distance(liste[j+1],kpos))
         {
           temp = liste[j + 1];
           liste[j + 1] = liste[j];
           liste[j] = temp;
         }
       }
-      for (j = 0; j < i; j++)
+      for (j = 0; j <= i; j++)
       {
-        if (fabsf(sqrt(pow((p_tmp.x - kpos.x), 2) + pow((p_tmp.y - kpos.y), 2))) < fabsf(sqrt(pow((liste[j].x - kpos.x), 2) + pow((liste[j].y - kpos.y), 2))))
+        if (distance(kpos,p_tmp) < distance(kpos,liste[j]))
         {
-          printf("avant\n");
           liste[j].classe = p_tmp.classe;
           liste[j].x = p_tmp.x;
           liste[j].y = p_tmp.y;
-          printf("apres\n");
           return liste;
         }
       }
     }
     else{
-      printf("*****\n");
       liste[i]=p_tmp;
       return liste;
     }
     return liste;
   }
+
+void affiche_kppv(point* tab,int taille){
+  int i=0;
+  while(tab[i].classe != 0){
+    MLV_draw_filled_circle((tab[i].x + 1) * (taille / 2), taille - ((tab[i].y + 1) * (taille / 2)), 3, MLV_COLOR_GREEN);
+    i++;
+  }
+  MLV_actualise_window();
+}
 
 float distance(point p_tmp,point kpos){
   return (fabsf(sqrt(pow((p_tmp.x - kpos.x), 2) + pow((p_tmp.y - kpos.y), 2))));
@@ -188,10 +199,10 @@ float distance(point p_tmp,point kpos){
   point point_proche_dans_zone(point p, zone z_tmp)
   {
     int i = 0, indexmin = 0;
-    float dist = 0, dmin = 10;
+    float dist = 0, dmin = 100;
     while (z_tmp[i].classe != 0)
     {
-      dist = fabsf(sqrt(pow((z_tmp[i].x - p.x), 2) + pow((z_tmp[i].y - p.y), 2)));
+      dist=distance(p,z_tmp[i]);
       if (dist < dmin)
       {
         dmin = dist;
@@ -248,6 +259,7 @@ int main()
   {
     int taille = 750;
     int x, y, i = 0, classe, k;
+    float x2,y2;
     int info[3];
     arbre_kd a;
     point *tab;
@@ -419,10 +431,12 @@ int main()
         MLV_wait_input_box(taille + 10, 10, taille + 40, 20, MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK, "Valeur k :", &classetxt);
         k = atoi(classetxt);
         MLV_wait_mouse(&x, &y);
-        temp.x = x;
-        temp.y = y;
+        x2 = ((x * 1.000000) / (taille / 2)) - 1;
+        y2 = 1 - ((y * 1.000000) / (taille / 2));
+        temp.x = x2;
+        temp.y = y2;
         temp.classe = 0;
-        zkppv = (point*)calloc((k+2),sizeof(point));
+        zkppv = (point*)calloc((k+1),sizeof(point));
         if (zkppv == NULL)
         {
           printf("Erreur d'allocation !\n");
@@ -430,6 +444,8 @@ int main()
         }
         zkppv=recherche(a,temp,k,zkppv);
         affichage_zone(zkppv);
+        affiche_kppv(zkppv,taille);
+        free(zkppv);
       }
     }
   }
