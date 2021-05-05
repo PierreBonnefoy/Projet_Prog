@@ -101,6 +101,14 @@ void reaffiche_button(){
       MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK,
       MLV_TEXT_LEFT,
       MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
+      MLV_draw_text_box(
+      taille + 10, 400,
+      150, 20,
+      "KPPV arbre",
+      1,
+      MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK,
+      MLV_TEXT_LEFT,
+      MLV_HORIZONTAL_CENTER, MLV_VERTICAL_CENTER);
   MLV_draw_line(taille, 1, taille, taille - 1, MLV_COLOR_WHITE);
 }
 

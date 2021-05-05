@@ -15,10 +15,10 @@ struct noeud{
 
 int est_vide(arbre_kd a);
 arbre_kd inserer(arbre_kd a, point p,int choix );
-point *recherche(arbre_kd a,point p,int k);
-point * maj_liste(point point_tmp,point * liste);
+point *recherche(arbre_kd a,point p,int k,point *liste);
+point * maj_liste(point point_tmp,point * liste,int k,point kpos);
 point point_proche_dans_zone(point p, zone z_tmp);
 int est_dans_zone(point p, zone z_tmp);
-zone concat(zone zone1,zone zone2);
-
+zone rajoute_point(zone z,point p);
+float distance(point p_tmp,point kpos);
 #endif
