@@ -399,7 +399,7 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
   for(j=0;j<k;j++){
     tabclasse[tab[kpbis[j]].classe]+=1;
   }
-  for(j=1;j<=2;j++){
+  for(j=1;j<=5;j++){
     if(tabclasse[j]>max){
       max=tabclasse[j];
       maxindex=j;
@@ -431,7 +431,7 @@ void affichage_points(int taille, point *tab)
 
   while (tab[i].classe != 0)
   {
-    if (tab[i].classe == 3)
+    if (tab[i].classe == 0)
     {
       MLV_draw_filled_circle((tab[i].x + 1) * (taille / 2), taille - ((tab[i].y + 1) * (taille / 2)), 3, MLV_COLOR_GREEN);
     }
@@ -442,6 +442,18 @@ void affichage_points(int taille, point *tab)
     if (tab[i].classe == 2)
     {
       MLV_draw_filled_circle((tab[i].x + 1) * (taille / 2), taille - ((tab[i].y + 1) * (taille / 2)), 3, MLV_COLOR_RED);
+    }
+    if (tab[i].classe == 3)
+    {
+      MLV_draw_filled_circle((tab[i].x + 1) * (taille / 2), taille - ((tab[i].y + 1) * (taille / 2)), 3, MLV_COLOR_PINK);
+    }
+    if (tab[i].classe == 4)
+    {
+      MLV_draw_filled_circle((tab[i].x + 1) * (taille / 2), taille - ((tab[i].y + 1) * (taille / 2)), 3, MLV_COLOR_BROWN);
+    }
+    if (tab[i].classe == 5)
+    {
+      MLV_draw_filled_circle((tab[i].x + 1) * (taille / 2), taille - ((tab[i].y + 1) * (taille / 2)), 3, MLV_COLOR_YELLOW);
     }
     i++;
   }

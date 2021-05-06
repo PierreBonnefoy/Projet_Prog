@@ -14,7 +14,7 @@ void alea(int size,int nbr,char* nom){
   {
     x=(((float)rand()/(float)RAND_MAX)*2)-1;
     y=(((float)rand()/(float)RAND_MAX)*2)-1;
-    classe=(rand()%2)+1;
+    classe=rand()%(nbr)+1;
     fprintf(save, "%d %f %f\n",classe,x,y);
   }
 

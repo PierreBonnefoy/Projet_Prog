@@ -102,44 +102,6 @@ point *recherche(arbre_kd a, point p, int k,point *liste){
   return liste;
 }
 
-/*
-point *recherche(arbre_kd a, point p, int k, point *liste)
-{
-  liste = maj_liste(a->noeud, liste, p);
-  if (est_vide(a->filsgauche) && est_vide(a->filsdroit))
-  {
-    return liste;
-  }
-  else
-  {
-    k -= 1;
-    if (est_vide(a->filsgauche))
-    {
-      liste = recherche(a->filsdroit, p, k, liste);
-      return liste;
-    }
-    if (est_vide(a->filsdroit))
-    {
-      liste = recherche(a->filsgauche, p, k, liste);
-      return liste;
-    }
-    else
-    {
-      liste = recherche(a->filsgauche, p, k, liste);
-      if (fabsf(sqrt(pow((point_proche_dans_zone(p, a->zone).x - p.x), 2) + pow((point_proche_dans_zone(p, a->zone).y - p.y), 2))) > fabsf(sqrt(pow((point_proche_dans_zone(p, a->filsdroit->zone).x - p.x), 2) + pow((point_proche_dans_zone(p, a->filsdroit->zone).y - p.y), 2))))
-      {
-        liste = recherche(a->filsdroit, p, k, liste);
-        return liste;
-      }
-      return liste;
-    }
-  }
-  else
-  {
-    return liste;
-  }  
-}*/
-
 point *maj_liste(point p_tmp, point * liste,int k, point kpos) 
   {
     int i = 0, j = 0;
@@ -211,7 +173,7 @@ float distance(point p_tmp,point kpos){
       i++;
     }
     return z_tmp[indexmin];
-  }
+ }
 
   int est_dans_zone(point p, zone z_tmp)
   {
@@ -428,6 +390,7 @@ int main()
       /*si kppv arbre*/
       if (x > taille + 10 && x < taille + 10 + 150 && y > 400 && y < 420)
       {
+	affichage_points(taille, tab);
         MLV_wait_input_box(taille + 10, 10, taille + 40, 20, MLV_COLOR_RED, MLV_COLOR_GREEN, MLV_COLOR_BLACK, "Valeur k :", &classetxt);
         k = atoi(classetxt);
         MLV_wait_mouse(&x, &y);
