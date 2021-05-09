@@ -32,4 +32,5 @@ int main(int argc,char** argv){
     nom=argv[3];
     srand((unsigned int)time(NULL));
     alea(size,classe,nom);
+    return EXIT_SUCCESS;
 }

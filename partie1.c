@@ -1,8 +1,10 @@
 #include "partie1.h"
+#include "partie2.h"
 #include <MLV/MLV_all.h>
 #include <math.h>
 
 int cercle(){
+  /*---Propose l'affichage du cercle---*/
 	int i=0,j=0;
 	MLV_draw_text_box(
       750/2, 750/2,
@@ -43,6 +45,7 @@ int cercle(){
 }
 
 void reaffiche_button(){
+  /*---Réaffiche les boutons pour ne pas etre superposé avec le cercle---*/
 	int taille=750;
 	MLV_draw_filled_rectangle(750,0,200,750,MLV_COLOR_BLACK);
   MLV_draw_text_box(
@@ -154,7 +157,7 @@ point *chargement_fichier(point *tab, char *chemin)
 	}
   }
 
-  /*--Ecriture de la premiere ligne---*/
+  /*--Lecture de la premiere ligne---*/
 
   if(fscanf(fichier, "%d %d %d", &taille, &dimension, &nbr_classe)==EOF){
     fprintf(stderr,"Pb lecture du fichier !\n");
@@ -218,11 +221,12 @@ point *inserer_point(int x, int y, int classe, point *tab, int taille)
     i++;
   }
   free(tab);
-  /*---Conversion pour rentrer dans le tablea---*/
+  /*---Conversion pour rentrer dans le tableau---*/
   x2 = ((x * 1.000000) / (taille / 2)) - 1;
   y2 = 1 - ((y * 1.000000) / (taille / 2));
 
   /*---Insertion du point a la fin---*/
+
   tab_bis[i].x = x2;
   tab_bis[i].y = y2;
   tab_bis[i].classe = classe;
@@ -231,6 +235,7 @@ point *inserer_point(int x, int y, int classe, point *tab, int taille)
 
 point *undo(point *tab)
 {
+  /*---Renvoie un tableau bis contenant les meme points que celui donné sans le dernier---*/
   point *tab_bis;
   int i = 0;
   while (tab[i].classe != 0)
@@ -272,9 +277,14 @@ point *kppv(int k, int x, int y, int taille, point *tab)
     kpbis[i]=0;
   }
   
+  /*---Conversion des points de pixel a float---*/
+
   i = 0;
   x2 = ((x * 1.000000) / (taille / 2)) - 1;
   y2 = 1 - ((y * 1.000000) / (taille / 2));
+
+  /*---Mise a jour des kppv avec le parcours du tableau de points---*/
+
   while (tab[i].classe != 0)
   {
     distance = fabsf(sqrt(pow((tab[i].x - x2), 2) + pow((tab[i].y - y2), 2)));
@@ -299,6 +309,9 @@ point *kppv(int k, int x, int y, int taille, point *tab)
     }
     i++;
   }
+
+  /*---Trie du tableau de points---*/
+
   for(l=0;l<k;l++){
           if(kp[l]<kp[l+1]){
             temp=kp[l+1];
@@ -310,6 +323,9 @@ point *kppv(int k, int x, int y, int taille, point *tab)
           }
         }
   radius=kp[0] * (taille / 2);
+
+  /*---Dessin du cercle pour les kppv---*/
+
   if(cercle()==1){
   	affichage_points(taille, tab);
   	MLV_draw_circle(x,y,radius,MLV_COLOR_WHITE);
@@ -359,9 +375,14 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
     tabclasse[i]=0;
   }
   
+  /*---Conversion des points de pixel a float---*/
+
   i = 0;
   x2 = ((x * 1.000000) / (taille / 2)) - 1;
   y2 = 1 - ((y * 1.000000) / (taille / 2));
+
+  /*---Parcours du tableau de points et mise a jour du tableau des kppv---*/
+
   while (tab[i].classe != 0)
   {
     distance = fabsf(sqrt(pow((tab[i].x - x2), 2) + pow((tab[i].y - y2), 2)));
@@ -386,6 +407,9 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
     }
     i++;
   }
+
+  /*---Trie par ordre croissant du tableau des kppv---*/
+
   for(l=0;l<k;l++){
           if(kp[l]<kp[l+1]){
             temp=kp[l+1];
@@ -396,9 +420,15 @@ point *kppvpdd(int k,int x,int y,int taille,point *tab){
             kpbis[l]=tempi;
           }
         }
+
+  /*---Mise a jour du nombre de points pour chaque classes---*/
+  
   for(j=0;j<k;j++){
     tabclasse[tab[kpbis[j]].classe]+=1;
   }
+
+  /*---Parcours du tableau de nombre de points en fonction de leur classes et recupere la classe avec le max de points---*/
+
   for(j=1;j<=5;j++){
     if(tabclasse[j]>max){
       max=tabclasse[j];
@@ -431,6 +461,7 @@ void affichage_points(int taille, point *tab)
 
   while (tab[i].classe != 0)
   {
+    /*---Parcours de la liste des points et les affiche avec une couleur differentes selon leurs classes---*/
     if (tab[i].classe == 0)
     {
       MLV_draw_filled_circle((tab[i].x + 1) * (taille / 2), taille - ((tab[i].y + 1) * (taille / 2)), 3, MLV_COLOR_GREEN);
@@ -474,7 +505,12 @@ void sauvegarde_fichier(point *p, char *nom, int *info)
   /* Création du fichier de sauvegarde */
 
   save = fopen(nom, "w+");
+
+  /*---Ecriture de la premiere ligne---*/
+
   fprintf(save, "%d %d %d\n", info[0], info[1], info[2]);
+
+  /*---Ecriture de la liste des points lignes par lignes---*/
 
   while (p[i].classe != 0)
   {

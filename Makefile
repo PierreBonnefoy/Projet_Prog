@@ -12,3 +12,7 @@ clean:
 	-rm -f $(TARGET)
 	-rm -f $(OBJECTS)
 	-rm -rf *~
+	-rm generation
+
+generation:generation.c
+	gcc -W -Wall -std=c89 -pedantic -O3 generation.c -o generation
